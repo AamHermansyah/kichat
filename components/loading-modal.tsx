@@ -55,7 +55,7 @@ const LoadingModal = () => {
                   <Image
                     alt="Logo"
                     className="object-contain"
-                    src="/kichat-logo.png"
+                    src="/logo.png"
                     fill
                   />
                 </div>
