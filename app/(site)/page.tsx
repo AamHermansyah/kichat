@@ -21,7 +21,7 @@ export default function Home() {
           height={48}
           alt="Logo"
           className="mx-auto w-auto"
-          src="/kichat-logo.png"
+          src="/logo.png"
         />
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-800">
           Masuk ke akun anda

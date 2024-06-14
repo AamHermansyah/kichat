@@ -8,7 +8,7 @@ function KiChatLogo() {
         <Image
           alt="Logo"
           className="w-full h-full object-cover"
-          src="/kichat-logo.png"
+          src="/logo.png"
           fill
         />
       </div>
