@@ -1,7 +1,11 @@
 import NextAuth from 'next-auth'
 import authConfig from '@/auth.config'
-import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from './routes';
-import { NextResponse } from 'next/server';
+import {
+  DEFAULT_LOGIN_REDIRECT,
+  apiAuthPrefix,
+  authRoutes,
+  publicRoutes
+} from './routes';
 
 const { auth: middleware } = NextAuth(authConfig);
 
@@ -33,14 +37,14 @@ export default middleware((req) => {
   });
 
   if (isApiAuthRoute) {
-    return NextResponse.next();
+    return;
   }
 
   if (isAuthRoute) {
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
     }
-    return NextResponse.next();
+    return;
   }
 
   if (!isLoggedIn && !isPublicRoute) {
@@ -52,15 +56,15 @@ export default middleware((req) => {
     const encodedCallbackUrl = encodeURIComponent(callbackUrl);
 
     return Response.redirect(new URL(
-      `/login?callbackUrl=${encodedCallbackUrl}`,
+      `/?callbackUrl=${encodedCallbackUrl}`,
       nextUrl
     ));
   }
 
-  return NextResponse.next();
+  return;
 });
 
 // Optionally, don't invoke Middleware on some paths
 export const config = {
-  matcher: ["/((?!.*\\..*|_next|api|trpc).*)", "/"],
-};
+  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+}
