@@ -29,6 +29,7 @@ const RequestFriendBox: React.FC<RequestFriendBoxProps> = ({
     })
       .then(() => {
         toast.success('Permintaan pertemanan diterima!');
+        remove(data.id);
         router.refresh();
       })
       .finally(() => setAccepting(false))

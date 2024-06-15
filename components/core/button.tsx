@@ -10,6 +10,7 @@ interface ButtonProps {
   secondary?: boolean;
   danger?: boolean;
   disabled?: boolean;
+  className?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -19,7 +20,8 @@ const Button: React.FC<ButtonProps> = ({
   fullWidth,
   onClick,
   secondary,
-  type
+  type,
+  className
 }) => {
   return (
     <button
@@ -44,7 +46,8 @@ const Button: React.FC<ButtonProps> = ({
         fullWidth && 'w-full',
         secondary ? 'text-gray-800' : 'text-white',
         danger && 'bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600',
-        !secondary && !danger && 'bg-purple-500 hover:bg-purple-600 focus-visible:outline-purple-600'
+        !secondary && !danger && 'bg-purple-500 hover:bg-purple-600 focus-visible:outline-purple-600',
+        className
       )}
     >
       {children}

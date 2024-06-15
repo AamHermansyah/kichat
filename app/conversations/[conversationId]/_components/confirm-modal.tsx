@@ -3,7 +3,7 @@
 import Button from "@/components/core/button";
 import Modal from "@/components/core/modal";
 import useConversation from "@/hooks/useConversation";
-import { Dialog } from "@headlessui/react";
+import { Dialog, DialogTitle } from "@headlessui/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
@@ -41,7 +41,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
     >
-      <div className="sm:flex sm:items-start">
+      <div className="sm:flex sm:items-start pt-4 sm:pt-0">
         <div
           className="
             mx-auto
@@ -71,7 +71,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             sm:text-left
           "
         >
-          <Dialog.Title
+          <DialogTitle
             as="h3"
             className="
               text-base
@@ -81,7 +81,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             "
           >
             Delete conversation
-          </Dialog.Title>
+          </DialogTitle>
           <div className="mt-2">
             <p className="text-sm text-gray-500">
               Are you sure you want to delete this conversation? This action cannot be undone.
@@ -95,12 +95,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           sm:mt-4
           sm:flex
           sm:flex-row-reverse
+          sm:gap-4
+          space-y-2
+          sm:space-y-0
         "
       >
         <Button
           disabled={isLoading}
           danger
           onClick={onDelete}
+          className="w-full sm:w-auto"
         >
           Delete
         </Button>
@@ -108,6 +112,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           disabled={isLoading}
           secondary
           onClick={onClose}
+          className="w-full sm:w-auto"
         >
           Cancel
         </Button>

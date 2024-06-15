@@ -7,6 +7,7 @@ import { User } from "@prisma/client";
 import { User as UserIcon } from "lucide-react";
 import SettingsModal from "./setting-modal";
 import { useState } from "react";
+import useTotalFriendRequest from "@/hooks/useTotalFriendRequest";
 
 interface MobileSidebarProps {
   currentUser: User
@@ -14,8 +15,9 @@ interface MobileSidebarProps {
 
 const MobileSidebar: React.FC<MobileSidebarProps> = ({ currentUser }) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const routes = useRoutes();
+  const { requestFriends } = useTotalFriendRequest();
   const { isOpen } = useConversation();
+  const routes = useRoutes();
 
   if (isOpen) {
     return null;
@@ -42,34 +44,55 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ currentUser }) => {
           lg:hidden
         "
       >
-        <div
-          onClick={() => setIsOpenModal(true)}
-          className="
-            group
-            flex
-            gap-x-3
-            text-sm
-            leading-6
-            font-semibold
-            w-full
-            justify-center
-            p-4
-            text-purple-500
-            hover:text-purple-800
-            hover:bg-purple-100
-          "
-        >
-          <UserIcon className="h-6 w-6" />
+        <div className="w-full">
+          <div
+            onClick={() => setIsOpenModal(true)}
+            className="
+              group
+              flex
+              gap-x-3
+              text-sm
+              leading-6
+              font-semibold
+              w-full
+              justify-center
+              p-4
+              text-purple-500
+              hover:text-purple-800
+              hover:bg-purple-100
+            "
+          >
+            <UserIcon className="h-6 w-6" />
+          </div>
         </div>
 
-        {routes.map((route) => (
-          <MobileItem
-            key={route.href}
-            href={route.href}
-            active={route.active}
-            icon={route.icon}
-            onClick={route.onClick}
-          />
+        {routes.map((item) => (
+          <div className="relative w-full" key={item.label}>
+            {item.isRequestFriendRoute && !!requestFriends.length && (
+              <span className="
+              absolute 
+              top-1
+              right-[50%]
+              translate-x-[100%]
+              text-white 
+              text-[9px] 
+              bg-rose-500 
+              w-4 h-4 
+              rounded-full
+              flex
+              items-center
+              justify-center
+            ">
+                {requestFriends.length > 99 ? '99' : requestFriends.length}
+              </span>
+            )}
+            <MobileItem
+              href={item.href}
+              active={item.active}
+              icon={item.icon}
+              onClick={item.onClick}
+            />
+          </div>
         ))}
       </div>
     </>
