@@ -1,19 +1,15 @@
 "use client";
 
-import { FriendRequest, User } from "@prisma/client";
-import UserBox from "./user-box";
-import useTotalFriendRequest from "@/hooks/useTotalFriendRequest";
+import { User } from "@prisma/client";
+import FriendBox from "./friend-box";
 
 interface UserListProps {
-  items: (User & {
-    receivedFriendRequests: FriendRequest[];
-  })[]
+  items: User[]
 };
 
 const UserList: React.FC<UserListProps> = ({
   items
 }) => {
-  const { requestFriends } = useTotalFriendRequest();
   return (
     <aside
       className="
@@ -40,17 +36,15 @@ const UserList: React.FC<UserListProps> = ({
             text-neutral-800
             py-4
           ">
-            Temukan Orang
+            Daftar Teman
           </div>
         </div>
-        {items.map((item) => {
-          if (requestFriends.indexOf(item.id) === -1) return (
-            <UserBox
-              key={item.id}
-              data={item}
-            />
-          )
-        })}
+        {items.map((item) => (
+          <FriendBox
+            key={item.id}
+            data={item}
+          />
+        ))}
       </div>
     </aside>
   );

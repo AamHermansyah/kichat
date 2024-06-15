@@ -7,6 +7,7 @@ import DesktopItem from "./desktop-item";
 import Avatar from "@/components/core/avatar";
 import SettingsModal from "./setting-modal";
 import KiChatLogo from "./kichat-logo";
+import useTotalFriendRequest from "@/hooks/useTotalFriendRequest";
 
 interface DesktopSidebarProps {
   currentUser: User
@@ -17,6 +18,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
 }) => {
   const routes = useRoutes();
   const [isOpen, setIsOpen] = useState(false);
+  const { requestFriends } = useTotalFriendRequest();
 
   return (
     <>
@@ -64,14 +66,32 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
               <KiChatLogo />
             </div>
             {routes.map((item) => (
-              <DesktopItem
-                key={item.label}
-                href={item.href}
-                label={item.label}
-                icon={item.icon}
-                active={item.active}
-                onClick={item.onClick}
-              />
+              <div className="relative" key={item.label}>
+                {item.isRequestFriendRoute && !!requestFriends.length && (
+                  <span className="
+                    absolute 
+                    top-0 
+                    right-0 
+                    text-white 
+                    text-[9px] 
+                    bg-rose-500 
+                    w-4 h-4 
+                    rounded-full
+                    flex
+                    items-center
+                    justify-center
+                  ">
+                    {requestFriends.length > 99 ? '99' : requestFriends.length}
+                  </span>
+                )}
+                <DesktopItem
+                  href={item.href}
+                  label={item.label}
+                  icon={item.icon}
+                  active={item.active}
+                  onClick={item.onClick}
+                />
+              </div>
             ))}
           </ul>
         </nav>

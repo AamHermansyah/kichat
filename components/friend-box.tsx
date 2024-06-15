@@ -1,20 +1,17 @@
 "use client";
 
 import axios from "axios";
-import { FriendRequest, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import Avatar from "@/components/core/avatar";
-import { Clock4, LoaderIcon, UserRoundPlus } from "lucide-react";
-import toast from "react-hot-toast";
+import LoadingModal from "./loading-modal";
 
-interface UserBoxProps {
-  data: User & {
-    receivedFriendRequests: FriendRequest[];
-  }
+interface FriendBoxProps {
+  data: User
 }
 
-const UserBox: React.FC<UserBoxProps> = ({
+const FriendBox: React.FC<FriendBoxProps> = ({
   data
 }) => {
   const router = useRouter();
@@ -23,20 +20,22 @@ const UserBox: React.FC<UserBoxProps> = ({
   const handleClick = useCallback(() => {
     setIsLoading(true);
 
-    axios.post('/api/friend/add', {
-      receiverId: data.id
+    axios.post('/api/conversations', {
+      userId: data.id
     })
-      .then(() => {
-        toast.success('Permintaan pertemanan dikirim!');
-        router.refresh();
+      .then((data) => {
+        router.push(`/conversations/${data.data.id}`);
       })
-      .finally(() => setIsLoading(false))
-      .catch(() => toast.error('Something went wrong!'));
+      .finally(() => setIsLoading(false));
   }, [data, router]);
 
   return (
     <>
+      {isLoading && (
+        <LoadingModal />
+      )}
       <div
+        onClick={handleClick}
         className="
           w-full
           relative
@@ -45,7 +44,10 @@ const UserBox: React.FC<UserBoxProps> = ({
           space-x-3
           bg-white
           p-3
+          hover:bg-neutral-100
           rounded-lg
+          transition
+          cursor-pointer
         "
       >
         <Avatar user={data} />
@@ -70,23 +72,9 @@ const UserBox: React.FC<UserBoxProps> = ({
             </div>
           </div>
         </div>
-        {data.receivedFriendRequests.length > 0 ? (
-          <button className="p-2 rounded-full bg-gray-100 transition cursor-default">
-            <Clock4 className="w-4 h-4" />
-          </button>
-        ) : (
-          <button
-            onClick={handleClick}
-            className="p-2 rounded-full hover:bg-gray-100 transition"
-            disabled={isLoading}
-          >
-            {isLoading && <LoaderIcon className="w-4 h-4 animate-spin" />}
-            {!isLoading && <UserRoundPlus className="w-4 h-4" />}
-          </button>
-        )}
       </div>
     </>
   );
 }
 
-export default UserBox;
+export default FriendBox;

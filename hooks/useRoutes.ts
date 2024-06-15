@@ -1,7 +1,7 @@
 import { usePathname } from "next/navigation"
 import useConversation from "./useConversation";
 import { useMemo } from "react";
-import { LogOut, MessageCircle, UsersRound } from "lucide-react";
+import { LogOut, MessageCircle, Search, UserRoundPlus, UsersRound } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const useRoutes = () => {
@@ -16,9 +16,22 @@ const useRoutes = () => {
       active: pathname === '/conversations' || !!conversationId
     },
     {
+      label: 'Friends',
+      href: '/friends',
+      icon: UsersRound,
+      active: pathname === '/friends'
+    },
+    {
+      label: 'Request Friends',
+      href: '/request-friends',
+      icon: UserRoundPlus,
+      active: pathname === '/request-friends',
+      isRequestFriendRoute: true
+    },
+    {
       label: 'Users',
       href: '/users',
-      icon: UsersRound,
+      icon: Search,
       active: pathname === '/users'
     },
     {

@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import Sidebar from "@/components/sidebar";
 import getConversations from "@/data/conversation";
-import { getUsersByCurrentUserProfile } from "@/data/user";
+import { getFriendsById } from "@/data/user";
 import ConversationList from "./_components/conversation-list";
 import { SessionProvider } from "next-auth/react";
 
@@ -12,7 +12,7 @@ export default async function ConversationsLayout({
 }) {
   const session = await auth();
   const conversations = await getConversations(session?.user?.id!);
-  const users = await getUsersByCurrentUserProfile(session?.user?.email!);
+  const users = await getFriendsById(session?.user?.id!);
 
   return (
     <Sidebar userId={session?.user?.id!}>
