@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Kichat
 
-## Getting Started
+Kichat adalah aplikasi chatting real-time yang memungkinkan pengguna untuk menyisipkan pesan rahasia pada setiap pesan yang dikirim. Kami menggunakan metode ZWC (Zero-Width Characters) atau karakter tak terlihat yang digabungkan dengan enkripsi modern AES untuk memastikan keamanan pesan rahasia tersebut.
 
-First, run the development server:
+## Fitur
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Real-time Chatting**: Mengirim dan menerima pesan secara instan.
+- **Pesan Rahasia**: Menyisipkan pesan rahasia dalam setiap pesan yang dikirim menggunakan ZWC.
+- **Enkripsi AES**: Mengamankan pesan rahasia dengan enkripsi AES.
+- **Antarmuka User-friendly**: Desain antarmuka yang mudah digunakan.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Instalasi
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Untuk menjalankan Kichat di mesin lokal Anda, ikuti langkah-langkah berikut:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. Clone repositori ini:
 
-## Learn More
+    ```bash
+    git clone https://github.com/AamHermansyah/kichat.git
+    cd kichat
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Instal dependensi:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    ```bash
+    npm install
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. Jalankan aplikasi:
 
-## Deploy on Vercel
+    ```bash
+    npm run dev
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Aplikasi akan berjalan di `http://localhost:3000`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Penggunaan
+
+### Mengirim Pesan
+
+1. Buka aplikasi Kichat.
+2. Pilih kontak atau grup yang ingin Anda ajak ngobrol.
+3. Ketik pesan Anda di kotak teks.
+4. (Opsional) Untuk menyisipkan pesan rahasia, klik tombol `Pesan Rahasia` dan masukkan pesan rahasia Anda.
+5. Klik tombol kirim untuk mengirim pesan.
+
+### Membaca Pesan Rahasia
+
+1. Terima pesan dari kontak Anda.
+2. Jika pesan tersebut memiliki pesan rahasia, pesan akan otomatis terdeteksi dan ditampilkan di bagian khusus untuk pesan rahasia.
+3. Untuk mengekstrak pesan rahasia, klik tombol `Ekstrak` dan masukkan kata sandi jika diminta.
+
+## Teknologi yang Digunakan
+
+- **Fullstack**: Next.js 14
+- **Realtime**: Pusher
+- **Database**: PostgreSQL
+- **Enkripsi**: AES (Advanced Encryption Standard)
+- **ZWC**: Zero-Width Characters untuk penyisipan pesan rahasia
+
+## Kontribusi
+
+Kami menyambut kontribusi dari siapa saja. Untuk berkontribusi, ikuti langkah-langkah berikut:
+
+1. Fork repositori ini.
+2. Buat branch fitur baru: `git checkout -b fitur-anda`.
+3. Commit perubahan Anda: `git commit -m 'Menambahkan fitur baru'`.
+4. Push ke branch: `git push origin fitur-anda`.
+5. Buat Pull Request.
+
+## Lisensi
+
+Kichat dilisensikan di bawah [MIT License](LICENSE).
+
+## Lomba Gemastik 2024
+
+Aplikasi ini dibuat untuk berpartisipasi dalam lomba Gemastik 2024. Gemastik (Pagelaran Mahasiswa Nasional bidang Teknologi Informasi dan Komunikasi) adalah kompetisi bergengsi di Indonesia yang bertujuan untuk meningkatkan kualitas mahasiswa dalam pengembangan teknologi informasi dan komunikasi.
+
+## Kontak
+
+Untuk pertanyaan lebih lanjut atau bantuan, silakan hubungi kami di [227006009@student.unsil.ac.id].
+
+---
+
+Terima kasih telah menggunakan Kichat! Kami berharap aplikasi ini dapat membantu komunikasi Anda menjadi lebih aman dan menyenangkan.
