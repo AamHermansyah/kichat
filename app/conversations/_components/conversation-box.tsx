@@ -10,17 +10,20 @@ import { FullConversationType } from "@/types";
 import useOtherUser from "@/hooks/useOtherUser";
 import Avatar from "@/components/core/avatar";
 import AvatarGroup from "@/components/core/avatar-group";
+import { Session } from "next-auth";
 
 interface ConversationBoxProps {
   data: FullConversationType,
   selected?: boolean;
+  profile: Session['user'];
 }
 
 const ConversationBox: React.FC<ConversationBoxProps> = ({
   data,
-  selected
+  selected,
+  profile
 }) => {
-  const otherUser = useOtherUser(data);
+  const otherUser = useOtherUser(data, profile);
   const session = useSession();
   const router = useRouter();
 

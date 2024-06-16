@@ -5,12 +5,16 @@ import { Conversation, User, UserConversation } from "@prisma/client";
 import useOtherUser from "@/hooks/useOtherUser";
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, Ellipsis } from "lucide-react";
+import { ChevronLeft, CircleHelp, Ellipsis, Settings2 } from "lucide-react";
 import Avatar from "@/components/core/avatar";
 import AvatarGroup from "@/components/core/avatar-group";
 
 import ProfileDrawer from "./profile-drawer";
 import useActiveList from "@/hooks/useActiveList";
+import { Session } from "next-auth";
+import useSecretFeatures from "@/hooks/useSecretFeatures";
+import SecretFeaturesModal from "./secret-features-modal";
+import HelpModal from "./help-modal";
 
 interface HeaderProps {
   conversation: Conversation & {
@@ -19,20 +23,25 @@ interface HeaderProps {
         user: User
       }
     )[]
-  }
+  };
+  profile: Session['user'];
 };
 
-const Header: React.FC<HeaderProps> = ({ conversation }) => {
+const Header: React.FC<HeaderProps> = ({ conversation, profile }) => {
   const currentConversation = {
     ...conversation,
     users: conversation.users.map((item) => item.user)
   };
 
-  const otherUser = useOtherUser(currentConversation);
+  const otherUser = useOtherUser(currentConversation, profile);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [secretFeaturesOpen, setSecretFeaturesOpen] = useState(false);
+  const [helpModal, setHelpModal] = useState(false);
 
   const { members } = useActiveList();
   const isActive = members.indexOf(otherUser?.email!) !== -1;
+
+  const { showConfigButton, showHelpButton } = useSecretFeatures();
 
   const statusText = useMemo(() => {
     if (currentConversation.isGroup) {
@@ -48,6 +57,15 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
         data={currentConversation}
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+        profile={profile}
+      />
+      <SecretFeaturesModal
+        isOpen={secretFeaturesOpen}
+        onClose={() => setSecretFeaturesOpen(false)}
+      />
+      <HelpModal
+        isOpen={helpModal}
+        onClose={() => setHelpModal(false)}
       />
       <div
         className="
@@ -69,14 +87,14 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
             className="
               lg:hidden
               block
-              text-purple-500
-              hover:text-purple-600
+              text-gray-500
+              hover:text-gray-600
               transition
               cursor-pointer
             "
             href="/conversations"
           >
-            <ChevronLeft size={32} />
+            <ChevronLeft size={24} />
           </Link>
           {currentConversation.isGroup ? (
             <AvatarGroup users={currentConversation.users} />
@@ -98,16 +116,42 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
             </div>
           </div>
         </div>
-        <Ellipsis
-          size={32}
-          onClick={() => setDrawerOpen(true)}
-          className="
-            text-purple-500
-            cursor-pointer
-            hover:text-purple-600
-            transition
-          "
-        />
+        <div className="flex gap-4 items-center">
+          {showHelpButton && (
+            <CircleHelp
+              size={24}
+              onClick={() => setHelpModal(true)}
+              className="
+              text-purple-500
+              cursor-pointer
+              hover:text-purple-600
+              transition
+            "
+            />
+          )}
+          {showConfigButton && (
+            <Settings2
+              size={24}
+              onClick={() => setSecretFeaturesOpen(true)}
+              className="
+                text-purple-500
+                cursor-pointer
+                hover:text-purple-600
+                transition
+              "
+            />
+          )}
+          <Ellipsis
+            size={24}
+            onClick={() => setDrawerOpen(true)}
+            className="
+              text-gray-500
+              cursor-pointer
+              hover:text-gray-600
+              transition
+            "
+          />
+        </div>
       </div>
     </>
   );

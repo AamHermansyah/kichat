@@ -21,6 +21,7 @@ export default async function ConversationsLayout({
           <ConversationList
             users={users}
             initialItems={conversations}
+            profile={session?.user!}
           />
         </SessionProvider>
         {children}

@@ -16,15 +16,18 @@ import { find } from "lodash";
 import { useSession } from "next-auth/react";
 import GroupChatModal from "./group-chat-modal";
 import { pusherClient } from "@/utils/pusher";
+import { Session } from "next-auth";
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
-  users: User[]
+  users: User[];
+  profile: Session['user'];
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({
   initialItems,
-  users
+  users,
+  profile
 }) => {
   const session = useSession();
   const [items, setItems] = useState(initialItems);
@@ -143,6 +146,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                 key={item.id}
                 data={item}
                 selected={conversationId === item.id}
+                profile={profile}
               />
             ))}
           </div>

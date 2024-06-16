@@ -10,21 +10,24 @@ import Avatar from "@/components/core/avatar";
 import ConfirmModal from "./confirm-modal";
 import AvatarGroup from "@/components/core/avatar-group";
 import useActiveList from "@/hooks/useActiveList";
+import { Session } from "next-auth";
 
 interface ProfileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   data: Conversation & {
     users: User[]
-  }
+  };
+  profile: Session['user'];
 }
 
 const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
   isOpen,
   onClose,
-  data
+  data,
+  profile
 }) => {
-  const otherUser = useOtherUser(data);
+  const otherUser = useOtherUser(data, profile);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const { members } = useActiveList();
   const isActive = members.indexOf(otherUser?.email!) !== -1;
@@ -257,9 +260,9 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                   >
                                     <hr />
                                     {data.users.map((user) => (
-                                      <>
+                                      <div key={user.id}>
                                         <div className="w-full flex gap-4 items-start">
-                                          <Avatar key={user.id} user={user} />
+                                          <Avatar user={user} />
                                           <div>
                                             <p className="text-md font-medium text-gray-900">
                                               {user.name}
@@ -270,7 +273,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                           </div>
                                         </div>
                                         <hr />
-                                      </>
+                                      </div>
                                     ))}
                                   </dd>
                                 </div>

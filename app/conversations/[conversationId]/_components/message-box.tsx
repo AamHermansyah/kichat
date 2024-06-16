@@ -8,20 +8,22 @@ import { format } from "date-fns";
 import Image from "next/image";
 import { useState } from "react";
 import ImageModal from "./image-modal";
+import { Session } from "next-auth";
 
 interface MessageBoxProps {
   data: FullMessageType;
   isLast?: boolean;
+  profile: Session['user'];
 }
 
 const MessageBox: React.FC<MessageBoxProps> = ({
   data,
-  isLast
+  isLast,
+  profile
 }) => {
-  const session = useSession();
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
-  const isOwn = session?.data?.user?.email === data?.sender?.email;
+  const isOwn = profile?.email === data?.sender?.email;
   const seenList = (data.seenMessages || [])
     .filter((item) => item.user.email !== data?.sender?.email)
     .map((item) => {
@@ -46,7 +48,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
   const message = clsx(
     "text-sm w-fit overflow-hidden",
     isOwn ? 'bg-purple-500 text-white' : 'bg-gray-100',
-    data.image ? 'rounded-md p-0' : 'rounded-full py-2 px-3'
+    data.image ? 'rounded-md p-0' : 'rounded-3xl py-2 px-3'
   );
 
   return (

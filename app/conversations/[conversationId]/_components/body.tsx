@@ -9,13 +9,16 @@ import MessageBox from "./message-box";
 import axios from "axios";
 import { pusherClient } from "@/utils/pusher";
 import { find } from "lodash";
+import { Session } from "next-auth";
 
 interface BodyProps {
-  initialMessages: FullMessageType[]
+  initialMessages: FullMessageType[];
+  profile: Session['user'];
 }
 
 const Body: React.FC<BodyProps> = ({
-  initialMessages
+  initialMessages,
+  profile
 }) => {
   const [messages, setMessages] = useState(initialMessages);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -71,6 +74,7 @@ const Body: React.FC<BodyProps> = ({
           isLast={i === messages.length - 1}
           key={message.id}
           data={message}
+          profile={profile}
         />
       ))}
       <div ref={bottomRef} className="pt-24" />

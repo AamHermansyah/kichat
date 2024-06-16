@@ -2,11 +2,11 @@ import { useSession } from "next-auth/react";
 import { useMemo } from "react";
 import { FullConversationType } from "../types";
 import { User } from "@prisma/client";
+import { Session } from "next-auth";
 
 const useOtherUser = (conversation: FullConversationType | {
   users: User[]
-}): User => {
-  const session = useSession();
+}, profile: Session['user']): User => {
   let users: { users: User[] };
 
   // @ts-expect-error
@@ -20,12 +20,12 @@ const useOtherUser = (conversation: FullConversationType | {
   }
 
   const otherUser = useMemo(() => {
-    const currentUserEmail = session?.data?.user?.email;
+    const currentUserEmail = profile?.email;
 
     const otherUser = users.users.filter((user) => user.email !== currentUserEmail);
 
     return otherUser[0];
-  }, [session?.data?.user?.email, users.users]);
+  }, [profile?.email, users.users]);
 
   return otherUser;
 };
