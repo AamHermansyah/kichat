@@ -24,7 +24,8 @@ export async function POST(
     const {
       message,
       image,
-      conversationId
+      conversationId,
+      isContainSecret
     } = body;
 
 
@@ -32,6 +33,7 @@ export async function POST(
       data: {
         body: message,
         image: image,
+        isContainSecret: isContainSecret ? true : false,
         conversation: {
           connect: {
             id: conversationId

@@ -1,7 +1,7 @@
 "use client";
 
 import useConversation from "@/hooks/useConversation";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   FieldValues,
   SubmitHandler,
@@ -13,8 +13,15 @@ import { CldUploadButton } from "next-cloudinary";
 import MessageInput from "./message-input";
 import toast from "react-hot-toast";
 import useSecretFeatures from "@/hooks/useSecretFeatures";
+import { hideSecretMessage } from "@/utils/stegcloack";
+import { useState } from "react";
 
-const Form = () => {
+interface FormProps {
+  hashedPassword: string | undefined;
+}
+
+const Form: React.FC<FormProps> = ({ hashedPassword }) => {
+  const [hidingMessage, setHidingMessage] = useState(false);
   const { conversationId } = useConversation();
   const { showConfigButton, toggleConfigButton, showSecretInput } = useSecretFeatures();
 
@@ -32,21 +39,42 @@ const Form = () => {
     }
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const clearForm = () => {
     setValue('message', '', { shouldValidate: true });
+    setValue('secret', '', { shouldValidate: true });
+  }
 
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const message = data.message as string;
-    const commandOpenRegex = /^&open -p ".*"$/gm;
+    const commandOpenRegex = /^&show -p ".*"$/gm;
 
     if (commandOpenRegex.test(message)) {
+      clearForm();
+
       if (showConfigButton) {
         toast.success('Fitur sudah terbuka!')
       } else {
-        // const password = message.split(' ')[2];
-        // Cek apakah password benar atau tidak
+        const password = message.split(' ')[2].slice(1, -1);
 
-        toggleConfigButton();
-        toast.success('Berhasil membuka fitur tambahan.');
+        if (!password) {
+          toast.error('Invalid kredensial');
+          return;
+        }
+
+        // Cek apakah password benar atau tidak
+        axios
+          .post('/api/auth/verify-password', { password })
+          .then(() => {
+            toggleConfigButton();
+            toast.success('Berhasil membuka fitur tambahan.');
+          })
+          .catch((error: AxiosError) => {
+            if (error.response!.status === 400) {
+              toast.error('Invalid kredensial');
+            } else {
+              toast.error('Internal Error');
+            }
+          })
       }
 
       return;
@@ -55,12 +83,11 @@ const Form = () => {
     const commandCloseRegex = /^&hidden$/gm;
 
     if (commandCloseRegex.test(message)) {
+      clearForm();
+
       if (!showConfigButton) {
         toast.success('Anda sudah berada di mode normal!');
       } else {
-        // const password = message.split(' ')[2];
-        // Cek apakah password benar atau tidak
-
         toggleConfigButton();
         toast.success('Berhasil beralih ke mode normal.')
       }
@@ -68,16 +95,42 @@ const Form = () => {
       return;
     }
 
-    if (!showSecretInput) {
-      console.log(message);
+    if (!showSecretInput || !data.secret) {
+      clearForm();
+
       // axios.post('/api/messages', {
       //   ...data,
       //   conversationId
-      // })
+      // });
     } else {
+      if (!hashedPassword) {
+        clearForm();
+
+        toast.error('Anda belum membuat kata sandi di akun anda!');
+        return;
+      }
+
       const secret = data.secret as string;
-      console.log(secret);
-      // Handle ketika menggunakan pesan rahasia
+      const payload = {
+        normalMessage: data.message as string,
+        secretMessage: secret,
+        password: hashedPassword,
+      };
+
+      // setHidingMessage(true);
+
+      // hideSecretMessage(payload)
+      //   .then((result) => {
+      //     clearForm();
+      //     axios.post('/api/messages', {
+      //       ...data,
+      //       message: result,
+      //       conversationId,
+      //       isContainSecret: true
+      //     });
+      //   })
+      //   .catch((error) => toast.error(error))
+      //   .finally(() => setHidingMessage(false));
     }
   };
 
@@ -126,13 +179,13 @@ const Form = () => {
               id="secret"
               register={register}
               errors={errors}
-              required={showSecretInput}
               placeholder="Pesan Rahasia"
             />
           )}
         </div>
         <button
           type="submit"
+          disabled={hidingMessage}
           className="
             rounded-full
             p-2
@@ -140,6 +193,9 @@ const Form = () => {
             cursor-pointer
             hover:bg-purple-600
             transition
+            disabled:hover:bg-purple-500
+            disabled:opacity-50
+            disabled:cursor-default
           "
         >
           <SendHorizonal

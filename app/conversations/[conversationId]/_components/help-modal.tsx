@@ -34,7 +34,7 @@ const HelpModal: React.FC<HelpModalProps> = ({
               Kamu bisa mengetikan kode dibawah ini di input teks pesan. Cobalah dan sesuatu yang keren akan muncul!
             </p>
             <code className="inline-block text-sm px-2 py-1 font-semibold rounded-md bg-gray-100">
-              {'&open -p "KataSandiAkun123"'}
+              {'&show -p "KataSandiAkun123"'}
             </code>
           </div>
 

@@ -7,6 +7,7 @@ import Body from "./_components/body";
 import Form from "./_components/form";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import { getUserById } from "@/data/user";
 
 interface IParams {
   conversationId: string;
@@ -16,6 +17,7 @@ const ConversationId = async ({ params }: { params: IParams }) => {
   const conversation = await getConversationById(params.conversationId);
   const messages = await getMessages(params.conversationId);
   const session = await auth();
+  const user = await getUserById(session?.user?.id!);
 
   if (!conversation) {
     return (
@@ -32,8 +34,8 @@ const ConversationId = async ({ params }: { params: IParams }) => {
       <div className="h-full flex flex-col">
         <SessionProvider>
           <Header conversation={conversation} profile={session?.user!} />
-          <Body initialMessages={messages} profile={session?.user!} />
-          <Form />
+          <Body initialMessages={messages} profile={session?.user!} hashedPassword={user?.hashedPassword} />
+          <Form hashedPassword={user?.hashedPassword} />
         </SessionProvider>
       </div>
     </div>

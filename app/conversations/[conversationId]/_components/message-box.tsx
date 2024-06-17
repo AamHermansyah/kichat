@@ -6,22 +6,31 @@ import clsx from "clsx";
 import { useSession } from "next-auth/react";
 import { format } from "date-fns";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageModal from "./image-modal";
 import { Session } from "next-auth";
+import useSecretFeatures from "@/hooks/useSecretFeatures";
+import { revealSecretMessage } from "@/utils/stegcloack";
+import { Loader } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface MessageBoxProps {
   data: FullMessageType;
   isLast?: boolean;
   profile: Session['user'];
+  hashedPassword: string | undefined;
 }
 
 const MessageBox: React.FC<MessageBoxProps> = ({
   data,
   isLast,
-  profile
+  profile,
+  hashedPassword
 }) => {
   const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [initialMessage, setInitialMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { showSecretMessage } = useSecretFeatures();
 
   const isOwn = profile?.email === data?.sender?.email;
   const seenList = (data.seenMessages || [])
@@ -50,6 +59,28 @@ const MessageBox: React.FC<MessageBoxProps> = ({
     isOwn ? 'bg-purple-500 text-white' : 'bg-gray-100',
     data.image ? 'rounded-md p-0' : 'rounded-3xl py-2 px-3'
   );
+
+  // useEffect(() => {
+  //   if (data.body) {
+  //     if (showSecretMessage && data.body && data.isContainSecret && hashedPassword) {
+  //       setLoading(true);
+
+  //       revealSecretMessage({
+  //         message: data.body,
+  //         password: hashedPassword
+  //       })
+  //         .then((res) => {
+  //           setInitialMessage(res);
+  //         })
+  //         .catch((error) => toast.error(error))
+  //         .finally(() => {
+  //           setLoading(false);
+  //         });
+  //     } else {
+  //       setInitialMessage(null);
+  //     }
+  //   }
+  // }, [showSecretMessage]);
 
   return (
     <div className={container}>
@@ -87,7 +118,18 @@ const MessageBox: React.FC<MessageBoxProps> = ({
               "
             />
           ) : (
-            <div>{data.body}</div>
+            <div className="relative">
+              {showSecretMessage && data.isContainSecret && !loading ? initialMessage : (
+                <>
+                  {loading && (
+                    <div className="absolute inset-0 flex items-center justify-center text-xs bg-purple-500">
+                      <Loader className="w-4 h-4 animate-spin" />
+                    </div>
+                  )}
+                  {data.body}
+                </>
+              )}
+            </div>
           )}
         </div>
         {isLast && isOwn && seenList.length > 0 && (

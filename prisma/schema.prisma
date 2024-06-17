@@ -59,12 +59,13 @@ model Conversation {
 }
 
 model Message {
-  id             String   @id @default(uuid())
-  body           String?
-  image          String?
-  createdAt      DateTime @default(now())
-  conversationId String
-  senderId       String
+  id              String   @id @default(uuid())
+  body            String?
+  image           String?
+  isContainSecret Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  conversationId  String
+  senderId        String
 
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   sender       User         @relation(fields: [senderId], references: [id])
