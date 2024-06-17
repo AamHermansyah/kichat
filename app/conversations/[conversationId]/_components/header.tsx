@@ -3,7 +3,7 @@
 import { Conversation, User, UserConversation } from "@prisma/client";
 
 import useOtherUser from "@/hooks/useOtherUser";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, CircleHelp, Ellipsis, Settings2 } from "lucide-react";
 import Avatar from "@/components/core/avatar";
@@ -41,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ conversation, profile }) => {
   const { members } = useActiveList();
   const isActive = members.indexOf(otherUser?.email!) !== -1;
 
-  const { showConfigButton, showHelpButton } = useSecretFeatures();
+  const { showConfigButton, hiddenHelpButton, setHiddenButton } = useSecretFeatures();
 
   const statusText = useMemo(() => {
     if (currentConversation.isGroup) {
@@ -50,6 +50,13 @@ const Header: React.FC<HeaderProps> = ({ conversation, profile }) => {
 
     return isActive ? 'Active' : 'Offline';
   }, [currentConversation, isActive]);
+
+  useEffect(() => {
+    const helpButtonValue = localStorage.getItem('d-help-btn');
+    const isShowHelpButton = helpButtonValue === 'true' ? true : false;
+
+    setHiddenButton(isShowHelpButton);
+  }, []);
 
   return (
     <>
@@ -117,7 +124,7 @@ const Header: React.FC<HeaderProps> = ({ conversation, profile }) => {
           </div>
         </div>
         <div className="flex gap-4 items-center">
-          {showHelpButton && (
+          {!hiddenHelpButton && (
             <CircleHelp
               size={24}
               onClick={() => setHelpModal(true)}

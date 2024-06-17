@@ -43,6 +43,9 @@ const getConversations = async (id: string) => {
           }
         },
         messages: {
+          orderBy: {
+            createdAt: 'asc'
+          },
           include: {
             sender: true,
             seenMessages: {

@@ -19,14 +19,12 @@ interface MessageBoxProps {
   data: FullMessageType;
   isLast?: boolean;
   profile: Session['user'];
-  hashedPassword: string | undefined;
 }
 
 const MessageBox: React.FC<MessageBoxProps> = ({
   data,
   isLast,
   profile,
-  hashedPassword
 }) => {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [initialMessage, setInitialMessage] = useState<string | null>(null);
@@ -65,12 +63,12 @@ const MessageBox: React.FC<MessageBoxProps> = ({
     const source = axios.CancelToken.source();
 
     if (data.body) {
-      if (showSecretMessage && data.body && data.isContainSecret && hashedPassword) {
+      if (showSecretMessage && data.body && data.isContainSecret && data.sender.hashedPassword) {
         setLoading(true);
 
         axios.post('/api/zwc/decrypt', {
           message: data.body,
-          password: hashedPassword
+          password: data.sender.hashedPassword
         }, { cancelToken: source.token })
           .then((res) => {
             setInitialMessage(res.data);
@@ -92,7 +90,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
       source.cancel('Operation canceled by the user.');
       setInitialMessage(null);
     };
-  }, [showSecretMessage, data.body, data.isContainSecret, hashedPassword]);
+  }, [showSecretMessage, data.body, data.isContainSecret, data.sender.hashedPassword]);
 
   return (
     <div className={container}>
@@ -133,13 +131,21 @@ const MessageBox: React.FC<MessageBoxProps> = ({
             <div className="relative flex flex-col">
               {showSecretMessage && data.isContainSecret && initialMessage && !loading ? (
                 <>
-                  <span className="inline-block text-[10px] leading-3 text-gray-200">Pesan rahasia:</span>
+                  <span className={clsx(
+                    'inline-block text-[10px] leading-3',
+                    isOwn ? 'text-gray-800' : 'text-purple-500'
+                  )}>
+                    Pesan rahasia:
+                  </span>
                   {initialMessage}
                 </>
               ) : (
                 <>
                   {loading && (
-                    <div className="absolute inset-0 flex items-center justify-center text-xs bg-purple-500">
+                    <div className={clsx(
+                      'absolute inset-0 flex items-center justify-center text-xs',
+                      isOwn ? 'bg-purple-500' : 'bg-gray-100'
+                    )}>
                       <Loader className="w-4 h-4 animate-spin" />
                     </div>
                   )}

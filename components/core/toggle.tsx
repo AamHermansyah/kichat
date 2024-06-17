@@ -4,11 +4,11 @@ interface ToggleProps {
   label: string;
   id: string;
   disabled?: boolean;
-  defaultChecked?: boolean;
+  checked?: boolean;
   onChecked?: (checked: boolean) => void;
 }
 
-function Toggle({ id, label, disabled, defaultChecked, onChecked }: ToggleProps) {
+function Toggle({ id, label, disabled, checked, onChecked }: ToggleProps) {
   return (
     <div className="w-full flex items-center justify-between">
       <input
@@ -20,7 +20,7 @@ function Toggle({ id, label, disabled, defaultChecked, onChecked }: ToggleProps)
         onChange={(e) => {
           if (onChecked) onChecked(e.target.checked);
         }}
-        defaultChecked={defaultChecked}
+        checked={checked}
       />
       <div className="flex-1">
         <label htmlFor={id} className="text-sm text-gray-900 cursor-pointer">

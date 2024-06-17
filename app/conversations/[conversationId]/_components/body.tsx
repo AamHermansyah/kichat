@@ -14,13 +14,11 @@ import { Session } from "next-auth";
 interface BodyProps {
   initialMessages: FullMessageType[];
   profile: Session['user'];
-  hashedPassword: string | undefined;
 }
 
 const Body: React.FC<BodyProps> = ({
   initialMessages,
   profile,
-  hashedPassword
 }) => {
   const [messages, setMessages] = useState(initialMessages);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -77,7 +75,6 @@ const Body: React.FC<BodyProps> = ({
           key={message.id}
           data={message}
           profile={profile}
-          hashedPassword={hashedPassword}
         />
       ))}
       <div ref={bottomRef} className="pt-24" />

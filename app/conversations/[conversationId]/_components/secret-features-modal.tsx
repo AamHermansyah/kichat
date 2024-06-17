@@ -15,10 +15,10 @@ const SecretFeaturesModal: React.FC<SecretFeaturesModalProps> = ({
   onClose,
 }) => {
   const {
-    showHelpButton,
+    hiddenHelpButton,
     showSecretInput,
     showSecretMessage,
-    toggleHelpButton,
+    setHiddenButton,
     toggleSecretInput,
     toggleSecretMessage
   } = useSecretFeatures();
@@ -54,7 +54,7 @@ const SecretFeaturesModal: React.FC<SecretFeaturesModalProps> = ({
                 <Toggle
                   id="secret-input-toggle"
                   label="Enabled"
-                  defaultChecked={showSecretInput}
+                  checked={showSecretInput}
                   onChecked={() => {
                     toggleSecretInput();
                   }}
@@ -75,7 +75,7 @@ const SecretFeaturesModal: React.FC<SecretFeaturesModalProps> = ({
                 <Toggle
                   id="secret-display-toggle"
                   label="Enabled"
-                  defaultChecked={showSecretMessage}
+                  checked={showSecretMessage}
                   onChecked={() => {
                     toggleSecretMessage();
                   }}
@@ -90,15 +90,20 @@ const SecretFeaturesModal: React.FC<SecretFeaturesModalProps> = ({
                 <p className="text-xs sm:text-sm">
                   Tombol bantuan akan dihilangkan untuk menghindari kecurigaan dari orang orang.
                 </p>
+                <hr className="my-2" />
+                <p className="text-xs sm:text-sm">
+                  <b>PENTING:</b> Pastikan anda mengingat cara untuk membuka popup ini untuk mengaktifkan kembali tombol bantuan jika diperlukan.
+                </p>
               </div>
               <hr />
               <div className="p-4">
                 <Toggle
                   id="help-display-toggle"
                   label="Enabled"
-                  defaultChecked={!showHelpButton}
-                  onChecked={() => {
-                    toggleHelpButton();
+                  checked={hiddenHelpButton}
+                  onChecked={(checked) => {
+                    setHiddenButton(checked);
+                    localStorage.setItem('d-help-btn', `${checked}`);
                   }}
                 />
               </div>

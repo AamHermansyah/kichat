@@ -4,22 +4,22 @@ interface SecretFeatures {
   showConfigButton: boolean;
   showSecretInput: boolean;
   showSecretMessage: boolean;
-  showHelpButton: boolean;
+  hiddenHelpButton: boolean;
   toggleConfigButton: () => void;
   toggleSecretInput: () => void;
   toggleSecretMessage: () => void;
-  toggleHelpButton: () => void;
+  setHiddenButton: (open: boolean) => void;
 }
 
 const useSecretFeatures = create<SecretFeatures>((set) => ({
   showConfigButton: false,
   showSecretInput: false,
   showSecretMessage: false,
-  showHelpButton: true,
+  hiddenHelpButton: true,
   toggleConfigButton: () => set((state) => ({ showConfigButton: !state.showConfigButton })),
   toggleSecretInput: () => set((state) => ({ showSecretInput: !state.showSecretInput })),
   toggleSecretMessage: () => set((state) => ({ showSecretMessage: !state.showSecretMessage })),
-  toggleHelpButton: () => set((state) => ({ showHelpButton: !state.showHelpButton })),
+  setHiddenButton: (open) => set(() => ({ hiddenHelpButton: open })),
 }));
 
 export default useSecretFeatures;

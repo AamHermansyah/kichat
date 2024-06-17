@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/core/button";
+import CodeLine from "@/components/core/code-line";
 import Modal from "@/components/core/modal";
 
 interface HelpModalProps {
@@ -33,9 +34,7 @@ const HelpModal: React.FC<HelpModalProps> = ({
             <p className="text-sm text-gray-600">
               Kamu bisa mengetikan kode dibawah ini di input teks pesan. Cobalah dan sesuatu yang keren akan muncul!
             </p>
-            <code className="inline-block text-sm px-2 py-1 font-semibold rounded-md bg-gray-100">
-              {'&show -p "KataSandiAkun123"'}
-            </code>
+            <CodeLine>{'&show -p "KataSandiAkun123"'}</CodeLine>
           </div>
 
           <div className="space-y-1 border p-2 rounded-lg mt-2">
@@ -43,9 +42,7 @@ const HelpModal: React.FC<HelpModalProps> = ({
             <p className="text-sm text-gray-600">
               Kamu bisa mengetikan kode dibawah ini di input teks pesan.
             </p>
-            <code className="inline-block text-sm px-2 py-1 font-semibold rounded-md bg-gray-100">
-              {'&hidden'}
-            </code>
+            <CodeLine>{'&hidden'}</CodeLine>
           </div>
 
           <div className="border p-2 rounded-lg mt-2">

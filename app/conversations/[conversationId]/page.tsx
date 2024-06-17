@@ -34,7 +34,7 @@ const ConversationId = async ({ params }: { params: IParams }) => {
       <div className="h-full flex flex-col">
         <SessionProvider>
           <Header conversation={conversation} profile={session?.user!} />
-          <Body initialMessages={messages} profile={session?.user!} hashedPassword={user?.hashedPassword} />
+          <Body initialMessages={messages} profile={session?.user!} />
           <Form hashedPassword={user?.hashedPassword} />
         </SessionProvider>
       </div>
