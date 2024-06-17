@@ -96,7 +96,7 @@ const SecretFeaturesModal: React.FC<SecretFeaturesModalProps> = ({
                 <Toggle
                   id="help-display-toggle"
                   label="Enabled"
-                  defaultChecked={showHelpButton}
+                  defaultChecked={!showHelpButton}
                   onChecked={() => {
                     toggleHelpButton();
                   }}

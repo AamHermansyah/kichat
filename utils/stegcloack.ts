@@ -1,4 +1,4 @@
-import StegCloak from "stegcloak"
+import { hide, reveal } from "./stegcloack/stegcloak"
 
 type HideSecretMessageParams = {
   normalMessage: string;
@@ -12,35 +12,21 @@ type RevealSecretMessageParams = {
 }
 
 export const hideSecretMessage = (params: HideSecretMessageParams): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      let { secretMessage, password, normalMessage } = params;
-      password = !password.length ? process.env.NEXT_PUBLIC_DEFAULT_PASSWORD as string : password;
-      const stegcloak = new StegCloak(true, false);
-
-      try {
-        const result = stegcloak.hide(secretMessage, password, normalMessage);
-        resolve(result);
-      } catch (error) {
-        reject('Pesan biasa minimal 2 kata');
-      }
-    }, 1000);
+  const { secretMessage, password, normalMessage } = params;
+  return hide({
+    message: secretMessage,
+    password,
+    cover: normalMessage,
+    encrypt: true,
+    integrity: false
   });
 };
 
 export const revealSecretMessage = (params: RevealSecretMessageParams): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      let { password, message } = params;
-      password = !password.length ? process.env.NEXT_PUBLIC_DEFAULT_PASSWORD as string : password;
-      const stegcloak = new StegCloak(true, false);
+  const { password, message } = params;
 
-      try {
-        const result = stegcloak.reveal(message, password);
-        resolve(result);
-      } catch (error) {
-        reject(error);
-      }
-    }, 2000);
+  return reveal({
+    password,
+    secret: message
   });
 };

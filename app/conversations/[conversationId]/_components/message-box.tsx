@@ -13,6 +13,7 @@ import useSecretFeatures from "@/hooks/useSecretFeatures";
 import { revealSecretMessage } from "@/utils/stegcloack";
 import { Loader } from "lucide-react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 interface MessageBoxProps {
   data: FullMessageType;
@@ -57,30 +58,41 @@ const MessageBox: React.FC<MessageBoxProps> = ({
   const message = clsx(
     "text-sm w-fit overflow-hidden",
     isOwn ? 'bg-purple-500 text-white' : 'bg-gray-100',
-    data.image ? 'rounded-md p-0' : 'rounded-3xl py-2 px-3'
+    data.image ? 'rounded-md p-0' : 'rounded-xl py-2 px-3'
   );
 
-  // useEffect(() => {
-  //   if (data.body) {
-  //     if (showSecretMessage && data.body && data.isContainSecret && hashedPassword) {
-  //       setLoading(true);
+  useEffect(() => {
+    const source = axios.CancelToken.source();
 
-  //       revealSecretMessage({
-  //         message: data.body,
-  //         password: hashedPassword
-  //       })
-  //         .then((res) => {
-  //           setInitialMessage(res);
-  //         })
-  //         .catch((error) => toast.error(error))
-  //         .finally(() => {
-  //           setLoading(false);
-  //         });
-  //     } else {
-  //       setInitialMessage(null);
-  //     }
-  //   }
-  // }, [showSecretMessage]);
+    if (data.body) {
+      if (showSecretMessage && data.body && data.isContainSecret && hashedPassword) {
+        setLoading(true);
+
+        axios.post('/api/zwc/decrypt', {
+          message: data.body,
+          password: hashedPassword
+        }, { cancelToken: source.token })
+          .then((res) => {
+            setInitialMessage(res.data);
+          })
+          .catch((error) => {
+            if (axios.isCancel(error)) {
+              console.log('Request canceled', error.message);
+            } else {
+              toast.error(error);
+            }
+          })
+          .finally(() => setLoading(false));
+      } else {
+        setInitialMessage(null);
+      }
+    }
+
+    return () => {
+      source.cancel('Operation canceled by the user.');
+      setInitialMessage(null);
+    };
+  }, [showSecretMessage, data.body, data.isContainSecret, hashedPassword]);
 
   return (
     <div className={container}>
@@ -118,8 +130,13 @@ const MessageBox: React.FC<MessageBoxProps> = ({
               "
             />
           ) : (
-            <div className="relative">
-              {showSecretMessage && data.isContainSecret && !loading ? initialMessage : (
+            <div className="relative flex flex-col">
+              {showSecretMessage && data.isContainSecret && initialMessage && !loading ? (
+                <>
+                  <span className="inline-block text-[10px] leading-3 text-gray-200">Pesan rahasia:</span>
+                  {initialMessage}
+                </>
+              ) : (
                 <>
                   {loading && (
                     <div className="absolute inset-0 flex items-center justify-center text-xs bg-purple-500">

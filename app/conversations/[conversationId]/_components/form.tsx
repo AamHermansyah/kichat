@@ -7,7 +7,7 @@ import {
   SubmitHandler,
   useForm
 } from "react-hook-form";
-import { SendHorizonal, Image } from "lucide-react";
+import { SendHorizonal, Image, Loader } from "lucide-react";
 import { CldUploadButton } from "next-cloudinary";
 
 import MessageInput from "./message-input";
@@ -98,14 +98,12 @@ const Form: React.FC<FormProps> = ({ hashedPassword }) => {
     if (!showSecretInput || !data.secret) {
       clearForm();
 
-      // axios.post('/api/messages', {
-      //   ...data,
-      //   conversationId
-      // });
+      axios.post('/api/messages', {
+        ...data,
+        conversationId
+      });
     } else {
       if (!hashedPassword) {
-        clearForm();
-
         toast.error('Anda belum membuat kata sandi di akun anda!');
         return;
       }
@@ -117,20 +115,20 @@ const Form: React.FC<FormProps> = ({ hashedPassword }) => {
         password: hashedPassword,
       };
 
-      // setHidingMessage(true);
+      setHidingMessage(true);
 
-      // hideSecretMessage(payload)
-      //   .then((result) => {
-      //     clearForm();
-      //     axios.post('/api/messages', {
-      //       ...data,
-      //       message: result,
-      //       conversationId,
-      //       isContainSecret: true
-      //     });
-      //   })
-      //   .catch((error) => toast.error(error))
-      //   .finally(() => setHidingMessage(false));
+      axios.post('/api/zwc/encrypt', { payload })
+        .then((res) => {
+          clearForm();
+          axios.post('/api/messages', {
+            ...data,
+            message: res.data,
+            conversationId,
+            isContainSecret: true
+          });
+        })
+        .catch(() => toast.error('Pesan biasa minimal 2 kata'))
+        .finally(() => setHidingMessage(false));
     }
   };
 
@@ -198,10 +196,17 @@ const Form: React.FC<FormProps> = ({ hashedPassword }) => {
             disabled:cursor-default
           "
         >
-          <SendHorizonal
-            size={18}
-            className="text-white"
-          />
+          {hidingMessage ? (
+            <Loader
+              size={18}
+              className="text-white animate-spin"
+            />
+          ) : (
+            <SendHorizonal
+              size={18}
+              className="text-white"
+            />
+          )}
         </button>
       </form>
     </div>
