@@ -37,7 +37,10 @@ const useRoutes = () => {
     {
       label: 'Logout',
       href: '#',
-      onClick: () => signOut({ callbackUrl: '/' }),
+      onClick: () => {
+        signOut({ callbackUrl: '/' });
+        localStorage.removeItem('d-help-btn');
+      },
       icon: LogOut
     }
   ], [pathname, conversationId]);
