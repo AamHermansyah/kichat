@@ -13,7 +13,6 @@ import { CldUploadButton } from "next-cloudinary";
 import MessageInput from "./message-input";
 import toast from "react-hot-toast";
 import useSecretFeatures from "@/hooks/useSecretFeatures";
-import { hideSecretMessage } from "@/utils/stegcloack";
 import { useState } from "react";
 
 interface FormProps {
@@ -48,7 +47,7 @@ const Form: React.FC<FormProps> = ({ hashedPassword }) => {
     const message = data.message as string;
     const commandOpenRegex = /^&show -p ".*"$/gm;
 
-    if (commandOpenRegex.test(message)) {
+    if (commandOpenRegex.test(message.trim())) {
       clearForm();
 
       if (showConfigButton) {
@@ -82,7 +81,7 @@ const Form: React.FC<FormProps> = ({ hashedPassword }) => {
 
     const commandCloseRegex = /^&hidden$/gm;
 
-    if (commandCloseRegex.test(message)) {
+    if (commandCloseRegex.test(message.trim())) {
       clearForm();
 
       if (!showConfigButton) {
@@ -100,6 +99,7 @@ const Form: React.FC<FormProps> = ({ hashedPassword }) => {
 
       axios.post('/api/messages', {
         ...data,
+        message: (data.message as string).trim(),
         conversationId
       });
     } else {
@@ -108,9 +108,9 @@ const Form: React.FC<FormProps> = ({ hashedPassword }) => {
         return;
       }
 
-      const secret = data.secret as string;
+      const secret = (data.secret as string).trim();
       const payload = {
-        normalMessage: data.message as string,
+        normalMessage: (data.message as string).trim(),
         secretMessage: secret,
         password: hashedPassword,
       };

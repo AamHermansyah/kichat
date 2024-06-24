@@ -7,7 +7,7 @@ import {
   UseFormRegister
 } from "react-hook-form";
 
-interface InputProps {
+interface DelayInputProps {
   label: string;
   id: string;
   type?: string;
@@ -17,7 +17,7 @@ interface InputProps {
   disabled?: boolean;
 }
 
-const Input: React.FC<InputProps> = ({
+const DelayInput: React.FC<DelayInputProps> = ({
   errors,
   id,
   label,
@@ -64,4 +64,4 @@ const Input: React.FC<InputProps> = ({
   )
 }
 
-export default Input
+export default DelayInput

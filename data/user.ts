@@ -97,7 +97,7 @@ export const getRequestFriends = async (id: string) => {
   }
 };
 
-export const getAllUsers = async (id: string) => {
+export const getAllUsers = async (id: string, keyword?: string | null) => {
   try {
     const users = await prisma.user.findMany({
       orderBy: {
@@ -136,6 +136,22 @@ export const getAllUsers = async (id: string) => {
               ],
             },
           },
+          keyword ? {
+            OR: [
+              {
+                name: {
+                  contains: keyword,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                email: {
+                  contains: keyword,
+                  mode: 'insensitive',
+                },
+              },
+            ],
+          } : {}
         ],
       },
       include: {
